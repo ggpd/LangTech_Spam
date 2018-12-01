@@ -11,15 +11,16 @@ from collections import Counter
 
 class LambDocument(object):
 
-    __slots__ = ['content_soup', 'content', 'label', 'sents', 'words', 'num_word']
+    __slots__ = ['idd', 'content_soup', 'content', 'label', 'sents', 'words', 'num_word']
     url_regex = '/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm'
 
 
-    def __init__(self, text, label):
+    def __init__(self, idd, text, label):
         email = email.message_from_string(text)
         content = email.get_payload()
         self.text_soup = BeautifulSoup(content, 'html.parser')
 
+        self.id = idd;
         self.label = label
         raw_text  = self.text_soup.get_text()
         self.sents = nltk.tokenize.sent_tokenize(raw_text, language='english')
