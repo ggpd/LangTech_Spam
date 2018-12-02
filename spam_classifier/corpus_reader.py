@@ -5,34 +5,51 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import urllib.request
 import tarfile
 import shutil
+from features import LambDocument
+
+import nltk
+from collections import Counter
 
 dataset_links = [
         ('ham', 'https://spamassassin.apache.org/old/publiccorpus/20021010_easy_ham.tar.bz2'),
-        ('ham', 'https://spamassassin.apache.org/old/publiccorpus/20021010_hard_ham.tar.bz2'),
+        #('ham', 'https://spamassassin.apache.org/old/publiccorpus/20021010_hard_ham.tar.bz2'),
         ('spam','https://spamassassin.apache.org/old/publiccorpus/20021010_spam.tar.bz2'),
-        ('ham', 'https://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham.tar.bz2'),
-        ('ham', 'https://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham_2.tar.bz2'),
-        ('ham', 'https://spamassassin.apache.org/old/publiccorpus/20030228_hard_ham.tar.bz2'),
-        ('spam','https://spamassassin.apache.org/old/publiccorpus/20030228_spam.tar.bz2'),
-        ('spam','https://spamassassin.apache.org/old/publiccorpus/20030228_spam_2.tar.bz2'),
-        ('spam','https://spamassassin.apache.org/old/publiccorpus/20050311_spam_2.tar.bz2'),
+        #('ham', 'https://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham.tar.bz2'),
+        #('ham', 'https://spamassassin.apache.org/old/publiccorpus/20030228_easy_ham_2.tar.bz2'),
+        #('ham', 'https://spamassassin.apache.org/old/publiccorpus/20030228_hard_ham.tar.bz2'),
+        #('spam','https://spamassassin.apache.org/old/publiccorpus/20030228_spam.tar.bz2'),
+        #('spam','https://spamassassin.apache.org/old/publiccorpus/20030228_spam_2.tar.bz2'),
+        #('spam','https://spamassassin.apache.org/old/publiccorpus/20050311_spam_2.tar.bz2'),
 ]
 
-def load_data(links=dataset_links, data_dir='data', remove_old=True):
+def setup_resources():
+    nltk.download('punkt')
+    nltk.download('stopwords')
+
+def load_data(links=dataset_links, data_dir='data', remove_old=False):
     if not os.path.isdir(data_dir) or remove_old:
         if os.path.isdir(data_dir):
             shutil.rmtree(data_dir)
         
         os.mkdir(data_dir)
+        os.mkdir(os.path.join(data_dir, 'spam'))
+        os.mkdir(os.path.join(data_dir, 'ham'))
+
         download_all_datasets(links, data_dir)
 
-    folders = [f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))]
+    data = []
+    folders = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))]
     for fol in folders:
-        files = [f for f in os.listdir(fol) if os.path.isfile(os.path.join(fol, f))]
-        
+        files = [os.path.join(fol,f) for f in os.listdir(fol) if os.path.isfile(os.path.join(fol, f))]
+        for fil in files:
+            with open(fil, errors='replace') as f:
+                print(str(len(data)) + " " + f.name)
+                d = f.read()
+                doc = LambDocument(f.name, d, os.path.dirname(fil))
+                data.append(doc)
 
-    
 
+    return data
 
 def download_all_datasets(links, data_dir):
     counter = 0
@@ -42,7 +59,12 @@ def download_all_datasets(links, data_dir):
         tar = tarfile.open(filepath + '.tar.bz2', 'r:bz2')
         for member in tar.getmembers():
             if member.isfile():
-                tar.extract(member, os.path.join(data_dir,ds[0]))
+                f = tar.extractfile(member)
+                fwrite = open(os.path.join(data_dir, ds[0], os.path.basename(member.name)), 'wb+')
+                fwrite.write(f.read())
+
+                fwrite.close()
+                f.close()
         tar.close()
 
         print(filepath + " download finished.")
@@ -70,11 +92,22 @@ def split_documents(documents, train=0.8, rand_seed=1):
 
     return shuffled_docs[:split_index], shuffled_docs[split_index:]
 
-def find_feature_words(documents):
-    corpus = [d.content for d in documents]
+def find_feature_words(documents, feature=50):
+    corpus = [" ".join(d.tokens) for d in documents]
 
-    t = TfidfVectorizer()
+    t = TfidfVectorizer(max_features=feature)
     t.fit_transform(corpus)
     return t.get_feature_names()
 
-load_data()
+def find_top_words(documents):
+    tokens = []
+    for doc in documents:
+        tokens += doc.tokens
+
+    counter = Counter(tokens)
+    print(counter.most_common(30))
+
+    return counter
+
+#setup_resources()
+#load_data()

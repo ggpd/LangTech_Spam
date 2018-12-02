@@ -5,22 +5,25 @@ from nltk.stem.porter import PorterStemmer
 
 from bs4 import BeautifulSoup
 
-import email
 import re
+import string
 from collections import Counter
+import mailparser
+from functools import reduce
 
 class LambDocument(object):
 
-    __slots__ = ['idd', 'content_soup', 'content', 'label', 'sents', 'words', 'num_word']
+    __slots__ = ['idd', 'text_soup', 'label', 'sents', 'tokens', 'word_freq', 'num_attach', 'num_word', 'avg_word_len']
     url_regex = '/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm'
 
 
     def __init__(self, idd, text, label):
-        email = email.message_from_string(text)
-        content = email.get_payload()
-        self.text_soup = BeautifulSoup(content, 'html.parser')
+        mail = mailparser.parse_from_string(text)
+        text = mail.body
+        self.num_attach = len(mail.attachments)
+        self.text_soup = BeautifulSoup(text, 'html.parser')
 
-        self.id = idd;
+        self.idd = idd
         self.label = label
         raw_text  = self.text_soup.get_text()
         self.sents = nltk.tokenize.sent_tokenize(raw_text, language='english')
@@ -28,14 +31,18 @@ class LambDocument(object):
 
         # Preprocess text
         raw_text = raw_text.lower() # all lower case
-        raw_text = raw_text.translate(None, string.punctuation) # strip puncuation
-        raw_text = [w for w in raw_text if not w in stopwords.words('english')] # strip stopwords
+        trans = str.maketrans('', '', string.punctuation)
+
+        raw_text = raw_text.translate(trans) # strip puncuation
+        self.tokens = nltk.tokenize.word_tokenize(raw_text, language='english')
+        self.tokens = [w for w in self.tokens if not w in stopwords.words('english')] # strip stopwords
         stemmer = PorterStemmer()
-        raw_text = [stemmer.stem(w) for w in raw_text] # remove stems
+        self.tokens = [stemmer.stem(w) for w in self.tokens] # remove stems
 
-        self.content = raw_text
+        self.word_freq = Counter(self.tokens)
+        
+        self.avg_word_len = reduce(lambda x,y: x + len(y), self.tokens) / len(self.tokens)
 
-        self.word_freq = nltk.tokenize.word_tokenize(self.content, language='english')
 
     def num_sent(self):
         return self.sents.size()
@@ -45,18 +52,21 @@ class LambDocument(object):
 
     def ngrams(self, n, top=-1):
         counts = Counter(ngrams(self.word_freq))
-        if top <= 0:
+        if top < 0:
             return counts
 
         return counts.most_common(top)
 
     def count_links(self):
-        return self.text_soup.find_all(href=True).size() # add regex to find all links
+        return len(self.text_soup.find_all(href=True)) # add regex to find all links
 
     def count_images(self):
-        return self.text_soup.find_all('img').size()
+        return len(self.text_soup.find_all('img'))
 
-    def avg_word_len():
+    def word_freq(self, word_ls):
+        pass
+
+    def get_vector(self):
         pass
 
 def count_capital(text):
