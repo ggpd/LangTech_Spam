@@ -13,8 +13,17 @@ from functools import reduce
 
 class LambDocument(object):
 
-    __slots__ = ['idd', 'text_soup', 'label', 'sents', 'tokens', 'word_freq', 'num_attach', 'num_word', 'avg_word_len']
-    url_regex = '/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm'
+    __slots__ = [
+            'idd', 
+            'text_soup', 
+            'label', 
+            'sents', 
+            'tokens', 
+            'words', 
+            'num_attach', 
+            'num_word', 
+            'avg_word_len'
+            ]
 
 
     def __init__(self, idd, text, label):
@@ -35,20 +44,19 @@ class LambDocument(object):
 
         raw_text = raw_text.translate(trans) # strip puncuation
         self.tokens = nltk.tokenize.word_tokenize(raw_text, language='english')
+        self.avg_word_len = reduce(lambda x,y: x + len(y), self.tokens, 0) / (len(self.tokens) + 1)
         self.tokens = [w for w in self.tokens if not w in stopwords.words('english')] # strip stopwords
         stemmer = PorterStemmer()
         self.tokens = [stemmer.stem(w) for w in self.tokens] # remove stems
 
-        self.word_freq = Counter(self.tokens)
-        
-        self.avg_word_len = reduce(lambda x,y: x + len(y), self.tokens) / len(self.tokens)
+        self.words = Counter(self.tokens)
 
 
     def num_sent(self):
-        return self.sents.size()
+        return len(self.sents)
 
     def avg_sen_len(self):
-        return num_word // self.num_sent()
+        return self.num_word // (1+self.num_sent())
 
     def ngrams(self, n, top=-1):
         counts = Counter(ngrams(self.word_freq))
@@ -58,16 +66,32 @@ class LambDocument(object):
         return counts.most_common(top)
 
     def count_links(self):
-        return len(self.text_soup.find_all(href=True)) # add regex to find all links
+        return len(self.text_soup.find_all(href=True))
 
     def count_images(self):
         return len(self.text_soup.find_all('img'))
 
-    def word_freq(self, word_ls):
-        pass
+    def word_freq(self, word_select):
+        freqs = []
 
-    def get_vector(self):
-        pass
+        for w in word_select:
+            freqs.append(self.words[w])
+        return freqs
+
+    def get_vector(self, word_features):
+        vec = [
+                self.idd, 
+                self.label, 
+                self.num_word, 
+                self.avg_word_len,
+                self.avg_sen_len(),
+                self.count_links(), 
+                self.count_images(), 
+                self.num_attach
+                ]
+        vec += self.word_freq(word_features)
+
+        return vec
 
 def count_capital(text):
     count = 0

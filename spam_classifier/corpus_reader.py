@@ -9,6 +9,8 @@ from features import LambDocument
 
 import nltk
 from collections import Counter
+import csv
+import math
 
 dataset_links = [
         ('ham', 'https://spamassassin.apache.org/old/publiccorpus/20021010_easy_ham.tar.bz2'),
@@ -25,6 +27,24 @@ dataset_links = [
 def setup_resources():
     nltk.download('punkt')
     nltk.download('stopwords')
+
+def get_vectors(data):
+    features = find_feature_words(data)
+    return [d.get_vector(features) for d in data]
+
+def save_vectors(vectors, filepath="vectors.csv"):
+    with open(filepath, 'w+') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        for v in vectors:
+            writer.writerow(v)
+
+def load_vectors(filename="vectors.csv"):
+    data = []
+    with open(filename, 'r') as f:
+        reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
+        for v in reader:
+            vectors.append(v)
+    return vectors
 
 def load_data(links=dataset_links, data_dir='data', remove_old=False):
     if not os.path.isdir(data_dir) or remove_old:
@@ -88,7 +108,7 @@ def load_document(path, label):
 
 def split_documents(documents, train=0.8, rand_seed=1):
     shuffled_docs = shuffle(documents, random_state=rand_seed)
-    split_index = train * len(shuffled_docs)
+    split_index = math.floor(train * len(shuffled_docs))
 
     return shuffled_docs[:split_index], shuffled_docs[split_index:]
 
@@ -105,9 +125,6 @@ def find_top_words(documents):
         tokens += doc.tokens
 
     counter = Counter(tokens)
-    print(counter.most_common(30))
 
     return counter
 
-#setup_resources()
-#load_data()

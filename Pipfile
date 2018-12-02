@@ -1,11 +1,17 @@
 [[source]]
+name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pypi"
+
+[dev-packages]
 
 [packages]
-click = "*"
-spam = {editable = true, path = "."}
+bs4 = "*"
+mail-parser = "*"
 scikit-learn = "*"
 numpy = "*"
-scipy = "*"
+click = "*"
+nltk = "*"
+
+[requires]
+python_version = "3.7"
