@@ -12,6 +12,7 @@ scikit-learn = "*"
 numpy = "*"
 click = "*"
 nltk = "*"
+setuptools = "*"
 
 [requires]
 python_version = "3.7"
