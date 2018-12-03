@@ -29,7 +29,7 @@ def setup_resources():
     nltk.download('stopwords')
 
 def get_vectors(data):
-    features = find_feature_words(data, feature=150)
+    features = find_feature_words(data, feature=500)
     return [d.get_vector(features) for d in data]
 
 def save_vectors(vectors, filepath="vectors.csv"):

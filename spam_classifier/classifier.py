@@ -1,18 +1,11 @@
 import csv
-import os
-from sklearn.neural_network.multilayer_perceptron import MLPClassifier
+from  sklearn.neural_network.multilayer_perceptron import MLPClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 import numpy
 from sklearn import svm, model_selection, neighbors
 
-
-def _fix_nulls(s):
-    for line in s:
-        yield line.replace('\0', '')
-
-
-class StatelessClassifier:
+class StatelessClassifier(object):
     """
     Returns the state at the end of each method for easy storage,
     does not store internal data.
@@ -28,12 +21,12 @@ class StatelessClassifier:
         train_label_matrix = numpy.asarray(train_label, dtype=numpy.float64)
         print("Train label shape: ", train_label_matrix.shape)
 
-        params = self.grid_search_svc(train_data_matrix, train_label_matrix, 5)
+        #params = self.grid_search_svc(train_data_matrix, train_label_matrix, 5)
 
-        print(params)
+        #print(params)
 
-        m = svm.SVC(**params)
-
+        #m = svm.SVC(**params)
+        m = svm.SVC(gamma='auto')
         #m = neighbors.KNeighborsClassifier()
 
         classifier = m.fit(train_data_matrix, train_label_matrix)
@@ -41,16 +34,16 @@ class StatelessClassifier:
         return classifier
 
     def test(self, classifier, test_data, test_label):
-        print("Testing...")
+        print "Testing..."
 
         test_data_matrix = numpy.asarray(test_data, dtype=object)
         test_label_matrix = numpy.asarray(test_label, dtype=numpy.float64)
 
-        predictions = classifier.predict(test_data)
-        conf_matrix = confusion_matrix(test_label, predictions)
-        print(conf_matrix)
-        print(classification_report(test_label, predictions))
-        
+        predictions = classifier.predict(test_data_matrix)
+        conf_matrix = confusion_matrix(test_label_matrix, predictions)
+        print conf_matrix
+        print classification_report(test_label, predictions)
+ 
         return predictions
 
     def grid_search_randomforest(self, X, y, nfolds):

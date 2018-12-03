@@ -1,7 +1,7 @@
-import click
 import os
-import time
+import csv
 from sklearn.externals import joblib
+import click
 import corpus_reader
 import classifier
 
@@ -63,7 +63,8 @@ def train(training_file, classifier_out):
 @cli.command()
 @click.argument("test_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
 @click.argument("classifier_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
-def test(test_file, classifier_file):
+@click.argument("errors_out", type=click.Path(dir_okay=False, file_okay=True))
+def test(test_file, classifier_file, errors_out):
     test_csv = corpus_reader.load_vectors(test_file)
     test_label = [1 if x[1] == 'spam' else 0 for x in test_csv]
     test_file_names = [x[0] for x in test_csv]
@@ -73,7 +74,13 @@ def test(test_file, classifier_file):
 
     final_classifier = joblib.load(filename=classifier_file)
 
-    use_ids.test(final_classifier, test_data, test_label)
+    pred = use_ids.test(final_classifier, test_data, test_label)
+
+    with open(errors_out, 'w+') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        for label, p, fname  in zip(test_label, pred, test_file_names):
+            if int(label) != int(p):
+                writer.writerow([int(label), int(p), fname])
 
 
 @cli.command()
@@ -85,4 +92,3 @@ def auto(data_dir, output_dir):
 
 if __name__ == '__main__':
     cli()
-
