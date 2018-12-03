@@ -5,11 +5,11 @@ from nltk.stem.porter import PorterStemmer
 
 from bs4 import BeautifulSoup
 
-import re
 import string
 from collections import Counter
 import mailparser
 from functools import reduce
+
 
 class LambDocument(object):
 
@@ -25,7 +25,6 @@ class LambDocument(object):
             'avg_word_len'
             ]
 
-
     def __init__(self, idd, text, label):
         mail = mailparser.parse_from_string(text)
         text = mail.body
@@ -34,7 +33,7 @@ class LambDocument(object):
 
         self.idd = idd
         self.label = label
-        raw_text  = self.text_soup.get_text()
+        raw_text = self.text_soup.get_text()
         self.sents = nltk.tokenize.sent_tokenize(raw_text, language='english')
         self.num_word = len(raw_text)
 
@@ -51,7 +50,6 @@ class LambDocument(object):
 
         self.words = Counter(self.tokens)
 
-
     def num_sent(self):
         return len(self.sents)
 
@@ -59,7 +57,7 @@ class LambDocument(object):
         return self.num_word // (1+self.num_sent())
 
     def ngrams(self, n, top=-1):
-        counts = Counter(ngrams(self.word_freq))
+        counts = Counter(ngrams(self.word_freq, n))
         if top < 0:
             return counts
 
@@ -93,6 +91,7 @@ class LambDocument(object):
 
         return vec
 
+
 def count_capital(text):
     count = 0
     capital_freq = {}
@@ -108,6 +107,5 @@ def count_capital(text):
 
                 capital_freq[current_streak] = capital_freq[current_streak] + 1
                 current_streak = 0
-                
 
     return count, [(k,v) for k,v in capital_freq.iteritems()]

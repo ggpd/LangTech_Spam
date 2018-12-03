@@ -1,11 +1,11 @@
 import os
 import csv
-from sklearn.externals import joblib
 import click
-import corpus_reader
-import classifier
+from sklearn.externals import joblib
+from . import corpus_reader, classifier
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 def cli():
@@ -43,6 +43,7 @@ def data(data_dir, output_dir):
 
     print("Done processing data")
 
+
 @cli.command()
 @click.argument("training_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
 @click.argument("classifier_out", type=click.Path(dir_okay=False, file_okay=True))
@@ -59,6 +60,7 @@ def train(training_file, classifier_out):
     final_classifier = use_ids.train(train_data, train_label)
 
     joblib.dump(final_classifier, filename=classifier_out)
+
 
 @cli.command()
 @click.argument("test_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
