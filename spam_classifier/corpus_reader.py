@@ -29,7 +29,7 @@ def setup_resources():
     nltk.download('stopwords')
 
 def get_vectors(data):
-    features = find_feature_words(data)
+    features = find_feature_words(data, feature=150)
     return [d.get_vector(features) for d in data]
 
 def save_vectors(vectors, filepath="vectors.csv"):
@@ -39,7 +39,7 @@ def save_vectors(vectors, filepath="vectors.csv"):
             writer.writerow(v)
 
 def load_vectors(filename="vectors.csv"):
-    data = []
+    vectors = []
     with open(filename, 'r') as f:
         reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
         for v in reader:
@@ -65,7 +65,11 @@ def load_data(links=dataset_links, data_dir='data', remove_old=False):
             with open(fil, errors='replace') as f:
                 print(str(len(data)) + " " + f.name)
                 d = f.read()
-                doc = LambDocument(f.name, d, os.path.dirname(fil))
+                doc = LambDocument(
+                        os.path.basename(f.name), 
+                        d, 
+                        os.path.basename(os.path.dirname(fil))
+                        )
                 data.append(doc)
 
 
