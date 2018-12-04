@@ -31,8 +31,9 @@ def data(data_dir, output_dir):
     train, test = corpus_reader.split_documents(d)
 
     print("Making vectors...")
-    train_v = corpus_reader.get_vectors(train)
-    test_v = corpus_reader.get_vectors(test)
+    train_v = corpus_reader.get_vectors(train, 50)
+    test_v = corpus_reader.get_vectors(test, 50)
+    return
     
     train_path = os.path.join(output_dir, "train.csv")
     test_path = os.path.join(output_dir, "test.csv")
@@ -50,9 +51,6 @@ def train(training_file, classifier_out):
     train = corpus_reader.load_vectors(training_file)
     train_label = [1 if x[1] == 'spam' else 0 for x in train]
     train_data = [x[2:] for x in train]
-    #train_data = train_data[:10]
-    #train_label = train_label[:10]
-    #print(train_label)
 
     use_ids = classifier.StatelessClassifier()
 

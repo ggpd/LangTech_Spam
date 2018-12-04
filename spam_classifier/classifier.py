@@ -34,15 +34,15 @@ class StatelessClassifier(object):
         return classifier
 
     def test(self, classifier, test_data, test_label):
-        print "Testing..."
+        print("Testing...")
 
         test_data_matrix = numpy.asarray(test_data, dtype=object)
         test_label_matrix = numpy.asarray(test_label, dtype=numpy.float64)
 
         predictions = classifier.predict(test_data_matrix)
         conf_matrix = confusion_matrix(test_label_matrix, predictions)
-        print conf_matrix
-        print classification_report(test_label, predictions)
+        print(conf_matrix)
+        print(classification_report(test_label, predictions))
  
         return predictions
 
