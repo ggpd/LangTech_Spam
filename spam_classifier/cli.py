@@ -22,7 +22,7 @@ def abs_listdir(data_dir):
 
 
 @cli.command()
-@click.argument("data_dir", type=click.Path(exists=True, dir_okay=True, file_okay=False))
+@click.argument("data_dir", type=click.Path(dir_okay=True, file_okay=False))
 @click.argument("output_dir", type=click.Path(dir_okay=True, file_okay=False))
 def data(data_dir, output_dir):
     print("Loading in data...")
@@ -33,7 +33,8 @@ def data(data_dir, output_dir):
     print("Making vectors...")
     train_v = corpus_reader.get_vectors(train)
     test_v = corpus_reader.get_vectors(test)
-    
+
+    os.makedirs(output_dir, exist_ok=True)
     train_path = os.path.join(output_dir, "train.csv")
     test_path = os.path.join(output_dir, "test.csv")
 
@@ -48,9 +49,9 @@ def data(data_dir, output_dir):
 @click.argument("training_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
 @click.argument("classifier_out", type=click.Path(dir_okay=False, file_okay=True))
 def train(training_file, classifier_out):
-    train = corpus_reader.load_vectors(training_file)
-    train_label = [1 if x[1] == 'spam' else 0 for x in train]
-    train_data = [x[2:] for x in train]
+    train_vectors = corpus_reader.load_vectors(training_file)
+    train_label = [x[1] for x in train_vectors]
+    train_data = [x[2:] for x in train_vectors]
     #train_data = train_data[:10]
     #train_label = train_label[:10]
     #print(train_label)
@@ -68,7 +69,7 @@ def train(training_file, classifier_out):
 @click.argument("errors_out", type=click.Path(dir_okay=False, file_okay=True))
 def test(test_file, classifier_file, errors_out):
     test_csv = corpus_reader.load_vectors(test_file)
-    test_label = [1 if x[1] == 'spam' else 0 for x in test_csv]
+    test_label = [x[1] for x in test_csv]
     test_file_names = [x[0] for x in test_csv]
     test_data = [x[2:] for x in test_csv]
 
@@ -80,9 +81,9 @@ def test(test_file, classifier_file, errors_out):
 
     with open(errors_out, 'w+') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
-        for label, p, fname  in zip(test_label, pred, test_file_names):
-            if int(label) != int(p):
-                writer.writerow([int(label), int(p), fname])
+        for label, p, fname in zip(test_label, pred, test_file_names):
+            if label != p:
+                writer.writerow([label, p, fname])
 
 
 @cli.command()

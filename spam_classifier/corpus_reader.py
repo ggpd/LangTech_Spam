@@ -65,16 +65,20 @@ def load_data(links=dataset_links, data_dir='data', remove_old=False):
     folders = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))]
     for fol in folders:
         files = [os.path.join(fol,f) for f in os.listdir(fol) if os.path.isfile(os.path.join(fol, f))]
-        for fil in files:
-            with open(fil, errors='replace') as f:
-                print(str(len(data)) + " " + f.name)
+        for file_number, fil in enumerate(files):
+            with open(fil, errors='replace', encoding='utf-8') as f:
+                print(file_number, " ", f.name)
                 d = f.read()
-                doc = LambDocument(
-                        os.path.basename(f.name), 
-                        d, 
-                        os.path.basename(os.path.dirname(fil))
-                        )
-                data.append(doc)
+                try:
+                    doc = LambDocument(
+                            os.path.basename(f.name),
+                            d,
+                            os.path.basename(os.path.dirname(fil))
+                            )
+                    data.append(doc)
+                except AssertionError:
+                    print("Skipping file #", file_number, ", path: ", f.name)
+                    print("Encoding error")
 
     return data
 
