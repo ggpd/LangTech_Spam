@@ -51,7 +51,6 @@ class LambDocument(object):
 
         self.word_freq = Counter(self.tokens)
 
-
     def num_sent(self):
         """ Get the total number of sentences. """
         return len(self.sents)
@@ -82,7 +81,7 @@ class LambDocument(object):
             total_capital
         ]
 
-        vec += per_len_capital
+        #vec += per_len_capital
         vec += self.word_freq_select(word_select_features)
 
         return vec
@@ -104,11 +103,10 @@ def count_capital(text, min_track=3, max_track=10):
                 if current_streak > max_track and max_track > 0:
                     current_streak = max_track + 1
 
-                if current_streak in capital_freq:
+                if current_streak not in capital_freq:
                     capital_freq[current_streak] = 0
 
                 capital_freq[current_streak] = capital_freq[current_streak] + 1
                 current_streak = 0
 
-
-    return count, [(k, v) for k, v in capital_freq.iteritems()]
+    return count, [(k, v) for k, v in capital_freq.items()].sort(key=lambda x: x[0])
