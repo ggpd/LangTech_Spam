@@ -2,7 +2,7 @@ import os
 
 import click
 
-from . import main
+from spam_classifier import main
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 

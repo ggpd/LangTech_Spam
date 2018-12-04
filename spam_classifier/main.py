@@ -1,7 +1,7 @@
 import os
 import csv
 from sklearn.externals import joblib
-from . import corpus_reader, classifier
+from spam_classifier import corpus_reader, classifier
 
 
 def data(data_dir, output_dir):
