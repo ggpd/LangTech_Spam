@@ -9,7 +9,7 @@ from .plot import plot_confusion_matrix
 
 
 
-class StatelessClassifier(object):
+class StatelessClassifier:
     """
     Returns the state at the end of each method for easy storage,
     does not store internal data.
