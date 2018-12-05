@@ -3,6 +3,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, classification_report
 import numpy
 from sklearn import svm, model_selection, neighbors
+from .plot import plot_confusion_matrix 
 
 
 class StatelessClassifier(object):
@@ -39,7 +40,9 @@ class StatelessClassifier(object):
         conf_matrix = confusion_matrix(test_label_matrix, predictions)
         print(conf_matrix)
         print(classification_report(test_label, predictions))
- 
+
+        plot_confusion_matrix(conf_matrix, ['ham', 'spam'], normalize=True)
+
         return predictions
 
     def grid_search_rf(self, X, y, nfolds):

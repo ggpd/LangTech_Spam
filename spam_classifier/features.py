@@ -96,7 +96,6 @@ def count_capital(text, min_track=3, max_track=10):
             current_streak += 1
         else:
             if current_streak > 0:
-
                 if current_streak < min_track and min_track > 0:
                     current_streak = min_track - 1
 

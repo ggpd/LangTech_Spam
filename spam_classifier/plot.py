@@ -1,11 +1,13 @@
 import itertools
+from collections import Counter
 
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import numpy as np
+import nltk.tokenize
 
 # https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', filename='conf_matrix.png', cmap=plt.cm.Reds):
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -31,14 +33,24 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.tight_layout()
+    plt.savefig(filename)
 
-def plot_wordcloud(freq, filename):
+def plot_wordcloud(freq, corpus, filename):
+    tokens = []
+    
+    for doc in corpus:
+        tokens += nltk.tokenize.word_tokenize(doc, language='english')
+
+    count = Counter(tokens)
+
+    freq_map = {v:float(count[v]) for v in freq}
+
     wc = WordCloud(
-        backgroup_color='white',
+        background_color='white',
         width=2500,
         height=2000
     )
 
-    wc.generate_from_frequencies(freq)
+    wc.generate_from_frequencies(freq_map)
 
     wc.to_file(filename)

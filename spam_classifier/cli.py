@@ -18,7 +18,6 @@ def cli():
 def data(data_dir, output_dir):
     main.data(data_dir, output_dir)
 
-
 @cli.command()
 @click.argument("training_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
 @click.argument("classifier_out", type=click.Path(dir_okay=False, file_okay=True))
@@ -54,6 +53,7 @@ def train_test(train_file, test_file, output_dir):
     errors_out = os.path.join(output_dir, "errors.csv")
     main.train(train_file, classifier_out)
     main.test(test_file, classifier_out, errors_out)
+
 
 if __name__ == '__main__':
     cli()

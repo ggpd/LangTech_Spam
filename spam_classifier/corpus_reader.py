@@ -10,6 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
 from .features import LambDocument
+from .plot import plot_wordcloud 
 
 import nltk
 
@@ -103,18 +104,20 @@ def split_documents(documents, train=0.8, rand_seed=1):
     train, test = train_test_split(documents, train_size=train, random_state=rand_seed)
     return train, test
 
-def find_feature_words(documents, feature=50):
+def find_feature_words(documents, feature=50, export_graph=True):
     spam_corpus = [' '.join(d.tokens) for d in documents if d.label == 'spam']
     ham_corpus = [' '.join(d.tokens) for d in documents if d.label == 'ham']
-    features = []
 
     t = TfidfVectorizer(max_features=feature)
 
     t.fit_transform(spam_corpus)
-    features += t.get_feature_names()
+    spam_features = t.get_feature_names()
+    if export_graph:
+        plot_wordcloud(spam_features, spam_corpus, "spam.png")
 
     t.fit_transform(ham_corpus)
-    features += t.get_feature_names()
+    ham_features = t.get_feature_names()
+    if export_graph:
+        plot_wordcloud(ham_features, ham_corpus, "ham.png")
 
-    print(features)
-    return features
+    return spam_features + ham_features
