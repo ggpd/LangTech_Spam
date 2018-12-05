@@ -86,6 +86,17 @@ class LambDocument(object):
 
         return vec
 
+    def get_vector_description(self, word_select_features):
+        return ["num_words",
+                "avg_word_len",
+                "avg_sentence_len",
+                "count_links",
+                "count_images",
+                "number_attachments",
+                "total_capitals",
+                *word_select_features]
+
+
 def count_capital(text, min_track=3, max_track=10):
     count = 0
     capital_freq = {}

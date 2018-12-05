@@ -15,6 +15,8 @@ def data(data_dir, output_dir):
     train_v = corpus_reader.get_vectors(train, features)
     test_v = corpus_reader.get_vectors(test, features)
 
+    data_description = train[0].get_vector_description(features)
+
     os.makedirs(output_dir, exist_ok=True)
     train_path = os.path.join(output_dir, "train.csv")
     test_path = os.path.join(output_dir, "test.csv")
@@ -24,6 +26,7 @@ def data(data_dir, output_dir):
     corpus_reader.save_vectors(test_v, test_path)
 
     print("Done processing data")
+    print(data_description)
     return train_path, test_path
 
 
