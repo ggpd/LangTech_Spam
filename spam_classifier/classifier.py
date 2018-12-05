@@ -1,4 +1,4 @@
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix, classification_report
@@ -70,12 +70,12 @@ class StatelessClassifier(object):
         fit_prior = [True, False]
         smoothing = [1.0e-10, 1.0]
         param_grid = {'fit_prior': fit_prior, 'alpha': smoothing}
-        grid_search = self.grid_search(MultinomialNB(), param_grid, nfolds)
+        grid_search = self.grid_search(BernoulliNB(), param_grid, nfolds)
         grid_search.fit(X, y)
         return grid_search
 
     def grid_search_knn(self, X, y, nfolds):
-        n_neighbors = [1, 3, 5, 10]
+        n_neighbors = [1, 3, 5, 10, 15, 20]
         weights = ['uniform', 'distance']
         param_grid = {'n_neighbors': n_neighbors, 'weights': weights}
         grid_search = self.grid_search(KNeighborsClassifier(), param_grid, nfolds)
