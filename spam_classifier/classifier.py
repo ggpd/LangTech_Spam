@@ -1,9 +1,12 @@
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix, classification_report
 import numpy
+
 from sklearn import svm, model_selection, neighbors
 from .plot import plot_confusion_matrix 
+
 
 
 class StatelessClassifier(object):
@@ -23,11 +26,12 @@ class StatelessClassifier(object):
         print("Train label shape: ", train_label_matrix.shape)
 
         # grid_search = self.grid_search_svc(train_data_matrix, train_label_matrix, 5)
+        # grid_search = self.grid_search_knn(train_data_matrix, train_label_matrix, 5)
         # grid_search = self.grid_search_nb(train_data_matrix, train_label_matrix, 5)
         grid_search = self.grid_search_rf(train_data_matrix, train_label_matrix, 5)
 
         print(grid_search.best_params_)
-
+        # print(grid_search.best_estimator_.feature_importances_)
         return grid_search.best_estimator_
 
     def test(self, classifier, test_data, test_label):
@@ -67,6 +71,14 @@ class StatelessClassifier(object):
         smoothing = [1.0e-10, 1.0]
         param_grid = {'fit_prior': fit_prior, 'alpha': smoothing}
         grid_search = self.grid_search(MultinomialNB(), param_grid, nfolds)
+        grid_search.fit(X, y)
+        return grid_search
+
+    def grid_search_knn(self, X, y, nfolds):
+        n_neighbors = [1, 3, 5, 10]
+        weights = ['uniform', 'distance']
+        param_grid = {'n_neighbors': n_neighbors, 'weights': weights}
+        grid_search = self.grid_search(KNeighborsClassifier(), param_grid, nfolds)
         grid_search.fit(X, y)
         return grid_search
 
