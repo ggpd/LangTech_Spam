@@ -1,3 +1,9 @@
 *.egg-info
 .idea
 Pipfile.lock
+paper.pdf
+paper.aux
+paper.fdb_latexmk
+paper.fls
+paper.log
+paper.synctex.gz
