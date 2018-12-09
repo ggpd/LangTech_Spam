@@ -6,9 +6,11 @@
 \usepackage{multicol, caption}
 \usepackage{graphicx}
 \usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{subcaption}
 %\usepackage{biblatex}
 \usepackage[margin=0.5in]{geometry} % don't know what size margins to use
-
+\BeforeBeginEnvironment{minipage}{\par\vspace{5mm}}
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
@@ -91,6 +93,15 @@
             
             TODO: methodology
 
+
+            \begin{Figure}
+                \centering
+                \includegraphics[width=\linewidth]{figures/prep.png}
+                \captionof{figure}{Preparation Process}
+                \label{fig:preprocess}
+            \end{Figure}
+
+
             Once data was loaded in we started by running the data the data through
             the Python Standard Library's mail parser, which striped the mail headers
             and put them into a map for separate analysis. It also handled multi-part
@@ -137,6 +148,20 @@
         
         \section{Feature Extraction}
 
+            This is text
+
+            
+            \begin{minipage}{0.4\columnwidth}
+                \includegraphics[width=\textwidth]{figures/spam_wc}
+                \captionof{figure}{Spam}
+                \label{spam_wc}
+            \end{minipage}
+            \begin{minipage}{0.4\columnwidth}
+                \includegraphics[width=\textwidth]{figures/ham_wc}
+                \captionof{figure}{Ham}
+                \label{ham_wc}
+             \end{minipage}
+            This is more text
         %\section{Classifier Selection}
 
         %\section{Classifier Tuning}
