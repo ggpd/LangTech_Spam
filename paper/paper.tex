@@ -7,10 +7,10 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{subfig}
-\usepackage{subcaption}
+%\usepackage{subcaption}
+
 %\usepackage{biblatex}
 \usepackage[margin=0.5in]{geometry} % don't know what size margins to use
-\BeforeBeginEnvironment{minipage}{\par\vspace{5mm}}
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
@@ -80,18 +80,23 @@
             Next we wanted data that was conversational, that didn't use too much 
             slang or leetspeak and was in general proper English. The size of the
             dataset needed to be fairly large, at least 1000, for frequency analysis.
-             Lastly, we would like a dataset that was referenced in multiple papers to make comparisons
-            of our results to others. So we shortlisted a few datasets that fulfilled
-            some of these characteristics.
-
-            The UCI SMS Spam Dataset is a collection of conversational text messages
-            origninating from a variety of sources.
-
-            TODO: needed info?
+            Lastly, we would like a dataset that was referenced in multiple papers to make comparisons
+            of our results to others. 
+            
+            So we shortlisted a few datasets that fulfilled some of these characteristics, but
+            settled on the SpamAssasin Dataset which fulfilled all of our requirements
+            with raw email data that mostly consisted of both business and casual
+            conversations. It consisted of both easy and hard data, but we stuck with
+            just the easy data as many of the hard pieces of data were too difficult
+            to classify without more information about the user.
 
         \section{Data Preparation}
             
-            TODO: methodology
+            With so much metadata given with this dataset, we wanted to take advantage
+            of it for use as potential features. In preprocessing we found many features
+            that could signature of spam emails such as excessive links or attachments.
+            The processes illustrated with Figure \ref{fig:preprocess}, is an overview
+            of the processes that will be preformed in this step.
 
 
             \begin{Figure}
@@ -144,13 +149,16 @@
 
 
             Now data was stored in memory as Python objects for processing through the
-            feature extractor.
+            feature extractor. We shuffled and then split the data 
+            80:20 into a training and testing set respectively.
         
         \section{Feature Extraction}
 
-            This is text
+            The next step is to extract the necessary features and then vectorize
+            them for training with our classifier. The first step of extraction was
+            to
 
-            
+
             \begin{minipage}{0.4\columnwidth}
                 \includegraphics[width=\textwidth]{figures/spam_wc}
                 \captionof{figure}{Spam}
@@ -165,9 +173,10 @@
         %\section{Classifier Selection}
 
         %\section{Classifier Tuning}
-
+            % Grid Search and Cross Validation
+            % play with Max amount of features to see if have effect
         %\section{Results}
-
+            % important metrics, why
         %\section{Evaluation}
 
         %\section{Conclusion}
