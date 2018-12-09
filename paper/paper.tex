@@ -4,7 +4,10 @@
  
 \usepackage{sectsty}
 \usepackage{multicol}
+\usepackage{apacite}
 \setlength{\columnsep}{1cm}
+\usepackage[margin=0.5in]{geometry} % don't know what size margins to use
+
 \sectionfont{\fontsize{12}{15}\selectfont}
  
 
@@ -25,9 +28,32 @@
             
 
         \section{Dataset Selection}
+            The correct selection of a dataset was crucial to the testing of 
+            different types of features. There were many characteristics that were
+            on our "wishlist." Such as having the freedom of processing 
+            the raw text ourselves and determining what features may be important, 
+            and not have the data preproccesed or turned into vectors.
+            Next we wanted data that was conversational, that didn't use too much 
+            slang or leetspeak and was in general proper English. The size of the
+            dataset needed to be fairly large, at least 1000, for frequency analysis.
+             Lastly, we would like a dataset that was referenced in multiple papers to make comparisons
+            of our results to others. So we shortlisted a few datasets that fulfilled
+            some of these characteristics.
 
+            The UCI SMS Spam Dataset is a collection of conversational text messages
+            origninating from a variety of sources.
         \section{Data Preparation}
-
+            Once data was loaded in we started by running the data the data through
+            the Python Standard Library's mail parser, which striped the mail headers
+            and put them into a map for separate analysis. It also handled multipart
+            data as files were encoded into the file in base64. Without using a mail
+            parser it would be difficult to just get the body of the text which
+            would be used for feature extraction. Other papers left this data in the
+            email, possibly because this information is hard to extract and the tools
+            weren't as easily accessable when their implementation was written. We
+            decided to strip this data out as to not add noise and also because many 
+            headers were left on from other spam checkers, identifying whether or not
+            it believed the message was spam or ham.
         \section{Feature Extraction}
 
         \section{Classifier Selection}
@@ -43,5 +69,6 @@
         \section{References}
 
     \end{multicols}
- 
+    %\bibliographystyle{apacite}
+    %\bibliography{spam.bib}
 \end{document}
