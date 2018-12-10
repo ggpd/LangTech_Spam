@@ -7,17 +7,14 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{subfig}
-%\usepackage{subcaption}
 
-%\usepackage{biblatex}
 \usepackage[margin=0.5in]{geometry} % don't know what size margins to use
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
 
 \setlength{\columnsep}{1cm}
-%\addbibresource{paper.bib}
-%\nocite{*}
+
 \sectionfont{\fontsize{12}{15}\selectfont}
  
 
@@ -63,8 +60,7 @@
             \begin{Figure}
                 \centering
                 \includegraphics[width=\linewidth]{figures/process.png}
-                \captionof{figure}{Our Machine Learning Process}
-                \label{fig:process}
+                \captionof{figure}{Our Machine Learning Process}\label{fig:process}
             \end{Figure}
 
 
@@ -86,7 +82,7 @@
             So we shortlisted a few datasets that fulfilled some of these characteristics, but
             settled on the SpamAssasin Dataset which fulfilled all of our requirements
             with raw email data that mostly consisted of both business and casual
-            conversations. It consisted of both easy and hard data, but we stuck with
+            conversations\cite{sa_dataset}. It consisted of both easy and hard data, but we stuck with
             just the easy data as many of the hard pieces of data were too difficult
             to classify without more information about the user.
 
@@ -102,8 +98,7 @@
             \begin{Figure}
                 \centering
                 \includegraphics[width=\linewidth]{figures/prep.png}
-                \captionof{figure}{Preparation Process}
-                \label{fig:preprocess}
+                \captionof{figure}{Preparation Process}\label{fig:preprocess}
             \end{Figure}
 
 
@@ -155,21 +150,44 @@
         \section{Feature Extraction}
 
             The next step is to extract the necessary features and then vectorize
-            them for training with our classifier. The first step of extraction was
-            to
-
+            them for training with our classifier. 
+            
+            \begin{Figure}
+                \centering
+                \includegraphics[scale=0.5]{figures/extract.png}
+                \captionof{figure}{Extraction Process}
+                \label{fig:extrac}
+            \end{Figure}
+            
+            
+            The first step of extraction was
+            to find words that meant the most to the corpus which we defined as
+            the body of the email. To accomplish this
+            we used the tf-idf algorithm implemented in scikit-learn. This algorithm helps
+            weigh down words that are too common, and bring up words that are important
+            to the corpus. Next we split the documents into spam and ham before analysis.
+            This was done because this algorithm is still based on frequency and the
+            ratio of ham to spam was not 1:1. Characteristic words to spam emails such
+            as ``free'' wouldn't show up because they're not prominent in ham emails.
 
             \begin{minipage}{0.4\columnwidth}
                 \includegraphics[width=\textwidth]{figures/spam_wc}
-                \captionof{figure}{Spam}
-                \label{spam_wc}
+                \captionof{figure}{Spam}\label{fig:spam_wc}
             \end{minipage}
             \begin{minipage}{0.4\columnwidth}
                 \includegraphics[width=\textwidth]{figures/ham_wc}
-                \captionof{figure}{Ham}
-                \label{ham_wc}
+                \captionof{figure}{Ham}\label{fig:ham_wc}
              \end{minipage}
-            This is more text
+            
+            
+             Figures \ref{fig:spam_wc} and \ref{fig:ham_wc} show
+             the most prominent 50 words in the corpus. Most the the words in the
+             ham word cloud relate to business operations asking someone to do about
+             task or getting times and dates of events. When you look at the spam
+             word cloud you see a few similar words such as ``mail'' or ``get''.
+             But in general you see words that you would associate with someone trying
+             to get you to send them money or buy a product. Words like ``money'',
+             ``offer'' and ``order'' are the epitome of this.
         %\section{Classifier Selection}
 
         %\section{Classifier Tuning}
@@ -179,9 +197,10 @@
             % important metrics, why
         %\section{Evaluation}
 
-        %\section{Conclusion}
-
-        %\section{References}
-        % \printbibliography
+        \section{Conclusion}
+            
+        \nocite{*}
+        \bibliography{paper} 
+        \bibliographystyle{alpha}
     \end{multicols}
 \end{document}
