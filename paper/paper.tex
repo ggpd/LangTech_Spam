@@ -241,7 +241,8 @@
         \section{Results}
             Classifiers were evaluated on precision and recall on the spam class. Overall, precision is
             weighted more heavily than recall in the evaluation because it would likely be more disruptive 
-            to classify a ham email as spam than to let a spam message slip through.
+            to classify a ham email as spam than to let in an occasional spam message. Subsequently, the 
+            classifiers were also subjected to various feature word counts to observe the effect.
             \subsection{General Precision and Recall}
                 Overall, the classifiers performed well with just features extracted from the email body.
                 Precision and recall comparison can be found in \autoref{fig:precision_recall} with direct 
@@ -249,12 +250,15 @@
 
                 \begin{Figure}
                     \begin{tabular}{|l|l|l|}
-                    \hline
-                                  & Precision & Recall \\ \hline
-                    KNN           & 90.91     & 51.02  \\ \hline
-                    Naive Bayes   & 83.67     & 83.67  \\ \hline
-                    Random Forest & 98.84     & 86.73  \\ \hline
-                    SVM           & 83.33     & 40.82  \\ \hline
+                        \hline
+                        & Precision & Recall \\ \hline
+                        KNN                                 & 90.91     & 51.02  \\ \hline
+                        Naive Bayes                         & 83.67     & 83.67  \\ \hline
+                        Random Forest                       & 98.84     & 86.73  \\ \hline
+                        SVM                                 & 83.33     & 40.82  \\ \hline
+                        Naive Bayes \cite{hovold2005naive}  & 98.46     & 99.66  \\ \hline
+                        DBM \cite{tzortzis2007deep}         & 96.40     & 95.51  \\ \hline
+                        SVM \cite{tzortzis2007deep}         & 96.14     & 95.24  \\ \hline
                     \end{tabular}
                     \captionof{table}{Precison and Recall}
                     \label{tab:precision_recall}
@@ -276,6 +280,13 @@
                 Random Forest also performed best on recall. The Naive Bayes classifier performed second best 
                 with an even recall and precision.
 
+                Comparing with classifiers by other researchers in \autoref{tab:precision_recall}, the 
+                Random Forest classifier performs better in precision than all three classifiers by other researchers. 
+                Looking at recall, however, leaves much to be desired. Likely due to focusing solely on email body 
+                content for text analysis, our implementation misses important information in subject lines or 
+                email addresses.
+
+
             \subsection{Effect of Number of Feature Words} 
                 When increasing the number of feature words, precision increased dramatically for some classifiers. 
                 Specifically, Naive Bayes and the SVM gained a precision increase of 10\% and 8\% respectively (See \autoref{fig:precision_word_effect}).
@@ -289,12 +300,7 @@
                     \captionof{figure}{Effect of the number of feature words on classifier recall}
                     \label{fig:recall_word_effect}
                 \end{Figure}
-            
-            
-            
-
-        %\section{Classifier Selection}
-
+                
                 \begin{Figure}
                     \centering
                     \includegraphics[width=\linewidth]{figures/precision_wv_effect.png}
@@ -306,18 +312,15 @@
                 for 250 and 450 feature words before having the largest gain of any classifier. 
                 Possibly, the gain in recall had a negative effect on the precision.
                 
-        %\section{Conclusion}
-
-        %\section{References}
-        % \printbibliography
         \section{Conclusion}
-        
-            This paper has shown that the usage of machine learning alone can preform
-            the classification well, compared to other's results our metrics are lower
-            than the other paper's we are comparing ourselves against. Adding more features
+
+            This paper has shown that the usage of machine learning alone on email body text 
+            along with a few other features can preform the classification well. 
+            However, our metrics are lower
+            than the other papers we are comparing against ourselves. Adding more features
             that aren't word based may help even more with performance and also increasing the
             size of the dataset would help as well. We also recognize the limitations of
-            this implementation lends itself to only classify emails from the early 2000s, as
+            this implementation lending itself to only classify emails from the early 2000s, as
             we did no testing on modern email data which may have a distribution that doesn't
             work well with our implementation.
         \nocite{*}
