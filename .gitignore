@@ -11,3 +11,5 @@
 *.dvi
 *.run.xml
 *.bcf
+.vscode
+*.out

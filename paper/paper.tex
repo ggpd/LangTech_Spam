@@ -7,10 +7,11 @@
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{subfig}
+\usepackage{hyperref}
 %\usepackage{subcaption}
 
 %\usepackage{biblatex}
-\usepackage[margin=0.5in]{geometry} % don't know what size margins to use
+\usepackage[margin=1.0in]{geometry} % don't know what size margins to use
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
@@ -19,6 +20,7 @@
 %\addbibresource{paper.bib}
 %\nocite{*}
 \sectionfont{\fontsize{12}{15}\selectfont}
+\subsectionfont{\fontsize{12}{15}\selectfont}
  
 
 \begin{document}
@@ -70,7 +72,7 @@
 
             In this paper we explore the selection public datasets, data preparation,
             feature extraction and finally the selection and tuning of classifiers.
-            We will do this following the process illustrated in Figure \ref{fig:process}.
+            We will do this following the process illustrated in \autoref{fig:process}.
         \section{Dataset Selection}
             The correct selection of a dataset was crucial to the testing of 
             different types of features. There were many characteristics that were
@@ -95,7 +97,7 @@
             With so much metadata given with this dataset, we wanted to take advantage
             of it for use as potential features. In preprocessing we found many features
             that could signature of spam emails such as excessive links or attachments.
-            The processes illustrated with Figure \ref{fig:preprocess}, is an overview
+            The processes illustrated with \autoref{fig:preprocess}, is an overview
             of the processes that will be preformed in this step.
 
 
@@ -170,15 +172,111 @@
                 \label{ham_wc}
              \end{minipage}
             This is more text
-        %\section{Classifier Selection}
+        
+        \section{Classifier Selection}
+        
+            We selected various classifiers from the scikit-learn Python library. The 
+            classifiers chosen for evaluation were Random Forest, K-Nearest Neighbors (KNN), 
+            Support Vector Machine (SVM) with the radial basis function (RBF) kernel, and Bernoulli 
+            Naive Bayes. All were chosen because they are well-known supervised machine learning 
+            algorithms and generally good for classification tasks. 
+        
+        \section{Classifier Tuning}
+            Once the classifiers were selected, we tuned them using a grid search with 5-fold 
+            cross-validation maximizing accuracy. The parameters evaluated for each classifier along 
+            with the chosen classifier parameters are as follows:
+            
+            \noindent\textbf{Random Forest}
+            \begin{itemize}
+                \setlength\itemsep{0em}
+                \item Number of Estimators: 40
+                \item Maximum Tree Depth: 40
+            \end{itemize}
+            \textbf{K-Nearest Neighbors}
+            \begin{itemize}
+                \setlength\itemsep{0em}
+                \item Number of Neighbors: 10
+                \item Weight by Distance?: Yes
+            \end{itemize}
+            \textbf{SVM}
+            \begin{itemize}
+                \setlength\itemsep{0em}
+                \item Error Penalty: 10
+                \item RBF Kernel Coefficient: 0.001
+            \end{itemize}
+            \textbf{Bernoulli Naive Bayes}
+            \begin{itemize}
+                \setlength\itemsep{0em}
+                \item Learn Prior Probabilities?: No
+                \item Smoothing?: None
+            \end{itemize}
 
-        %\section{Classifier Tuning}
-            % Grid Search and Cross Validation
-            % play with Max amount of features to see if have effect
-        %\section{Results}
-            % important metrics, why
-        %\section{Evaluation}
+            We also examined the effect of tuning the number of feature words chosen by the TF-IDF 
+            extractor. The number of feature words chosen for initial analysis was 50, but subsequent 
+            tests ranged from 50 to 1050 in steps of 200.
+        \section{Results}
+            Classifiers were evaluated on precision and recall on the spam class. Overall, precision is
+            weighted more heavily than recall in the evaluation because it would likely be more disruptive 
+            to classify a ham email as spam than to let a spam message slip through.
+            \subsection{General Precision and Recall}
+                Overall, the classifiers performed well with just features extracted from the email body.
+                Precision and recall comparison can be found in \autoref{fig:precision_recall} with direct 
+                number comparison in \autoref{tab:precision_recall}. 
 
+                \begin{Figure}
+                    \begin{tabular}{|l|l|l|}
+                    \hline
+                                  & Precision & Recall \\ \hline
+                    KNN           & 90.91     & 51.02  \\ \hline
+                    Naive Bayes   & 83.67     & 83.67  \\ \hline
+                    Random Forest & 98.84     & 86.73  \\ \hline
+                    SVM           & 83.33     & 40.82  \\ \hline
+                    \end{tabular}
+                    \captionof{table}{Precison and Recall}
+                    \label{tab:precision_recall}
+                \end{Figure}
+
+                \begin{Figure}
+                    \centering
+                    \includegraphics[width=\linewidth]{figures/precision_recall.png}
+                    \captionof{figure}{Precison and Recall Comparison}
+                    \label{fig:precision_recall}
+                \end{Figure}
+
+                While all classifiers had a precision greater than 80\%, the recall clearly divides the 
+                classifiers into two groups. Those with over 80\% recall were Random Forest and Naive Bayes, 
+                while the KNN and SVM both had a recall lower than 50\%. 
+                
+                Overall, the Random Forest classifier performed the best under our evaluation criteria 
+                with an almost perfect precision. In fact, only one ham instance was misclassified as spam. 
+                Random Forest also performed best on recall. The Naive Bayes classifier performed second best 
+                with an even recall and precision.
+
+            \subsection{Effect of Number of Feature Words} 
+                When increasing the number of feature words, precision increased dramatically for some classifiers. 
+                Specifically, Naive Bayes and the SVM gained a precision increase of 10\% and 8\% respectively (See \autoref{fig:precision_word_effect}).
+                However, the number of feature words did not seem to effect recall as much as precision (See \autoref{fig:recall_word_effect}).
+                Only one classifier gained over 3\% precision from 50 feature words. Naive Bayes gained 10\% recall when increasing 
+                the number of feature words from 50 to 250. This gain dropped off as the number of feature words increased.
+
+                \begin{Figure}
+                    \centering
+                    \includegraphics[width=\linewidth]{figures/recall_wv_effect.png}
+                    \captionof{figure}{Effect of the number of feature words on classifier recall}
+                    \label{fig:recall_word_effect}
+                \end{Figure}
+
+                \begin{Figure}
+                    \centering
+                    \includegraphics[width=\linewidth]{figures/precision_wv_effect.png}
+                    \captionof{figure}{Effect of the number of feature words on classifier precision}
+                    \label{fig:precision_word_effect}
+                \end{Figure}
+
+                Interestingly, Naive Bayes dropped in precision by over 2\% 
+                for 250 and 450 feature words before having the largest gain of any classifier. 
+                Possibly, the gain in recall had a negative effect on the precision.
+                
         %\section{Conclusion}
 
         %\section{References}
