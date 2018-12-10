@@ -188,6 +188,12 @@
              But in general you see words that you would associate with someone trying
              to get you to send them money or buy a product. Words like ``money'',
              ``offer'' and ``order'' are the epitome of this.
+
+             
+             We followed this same process for extracting features for the title, but
+             we kept the features separate as a title's content may have more distinct
+             patterns compared to the body of an email
+
         %\section{Classifier Selection}
 
         %\section{Classifier Tuning}
@@ -198,7 +204,14 @@
         %\section{Evaluation}
 
         \section{Conclusion}
-            
+            This paper has shown that the usage of machine learning alone can preform
+            the classification well, compared to other's results our metrics are lower
+            than the other paper's we are comparing ourselves against. Adding more features
+            that aren't word based may help even more with performance and also increasing the
+            size of the dataset would help as well. We also recognize the limitations of
+            this implementation lends itself to only classify emails from the early 2000s, as
+            we did no testing on modern email data which may have a distribution that doesn't
+            work well with our implementation.
         \nocite{*}
         \bibliography{paper} 
         \bibliographystyle{alpha}
