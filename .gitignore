@@ -1,3 +1,15 @@
 *.egg-info
-.idea
-Pipfile.lock
+.idea  
+*.pdf
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.bbl
+*.blg
+*.dvi
+*.run.xml
+*.bcf
+.vscode
+*.out
