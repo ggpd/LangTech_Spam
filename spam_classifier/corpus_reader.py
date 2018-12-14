@@ -1,3 +1,7 @@
+"""
+Helper functions to read, process and save data.
+"""
+
 import os
 import csv
 import math
@@ -26,21 +30,47 @@ dataset_links = [
     #('spam', 'https://spamassassin.apache.org/old/publiccorpus/20050311_spam_2.tar.bz2'),
 ]
 
-
 def setup_resources():
+    """
+    Setup needed corpra from NLTK
+    """
+
     nltk.download('punkt')
     nltk.download('stopwords')
 
-def get_vectors(data, features):
-    return [d.get_vector(features) for d in data]
+def get_vectors(data, body_features, title_features):
+    """
+    Turn a data array into vectors given the word features to extract.
+
+    :param data data to vectorize
+    :param features word features to extract
+
+    :return vector list
+    """
+    return [d.get_vector(body_features, title_features) for d in data]
 
 def save_vectors(vectors, filepath):
+    """
+    Save vectors to file name
+
+    :param vectors list of vectors to save
+    :param filepath name of file to save to
+    """
+
     with open(filepath, 'w+') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
         for v in vectors:
             writer.writerow(v)
 
 def load_vectors(filename):
+    """
+    Load vectors from csv file.
+
+    :param filename csv file to load
+
+    :return vector list
+    """
+
     vectors = []
     with open(filename, 'r') as f:
         reader = csv.reader(f, quoting=csv.QUOTE_NONNUMERIC)
@@ -49,6 +79,18 @@ def load_vectors(filename):
     return vectors
 
 def load_data(links=dataset_links, data_dir='data', remove_old=False):
+    """
+    Load the spam dataset.
+    Download data from SpamAssassin Corpus to data_dir, if already downloaded
+    leave alone. Override this with remove_old. 
+
+    :param links tuple of (label, dataset link)
+    :param data_dir directory to download data to
+    :param remove_old remove old data, before downloading
+
+    :return list of spam dataset
+    """
+
     if not os.path.isdir(data_dir) or remove_old:
         if os.path.isdir(data_dir):
             shutil.rmtree(data_dir)
@@ -82,6 +124,13 @@ def load_data(links=dataset_links, data_dir='data', remove_old=False):
 
 
 def download_all_datasets(links, data_dir):
+    """
+    Download datasets from links into data_dir.
+
+    :param links tuple of (label, dataset link)
+    :param data_dir directory to download to
+    """
+
     counter = 0
     for ds in links:
         filepath = os.path.join(data_dir,ds[0] + str(counter))
@@ -101,14 +150,30 @@ def download_all_datasets(links, data_dir):
         counter += 1
 
 def split_documents(documents, train=0.8, rand_seed=1):
+    """
+    Split dataset into train and test set with our defined parameters.
+
+    :return train training data
+    :return test testing data
+    """
+
     train, test = train_test_split(documents, train_size=train, random_state=rand_seed)
     return train, test
 
-def find_feature_words(documents, feature=50, export_graph=True):
-    spam_corpus = [' '.join(d.tokens) for d in documents if d.label == 'spam']
-    ham_corpus = [' '.join(d.tokens) for d in documents if d.label == 'ham']
+def find_feature_words(documents, token_parameter='tokens', num_feature=50, export_graph=False):
+    """
+    Find words from corpus to use given a list of the training set.
 
-    t = TfidfVectorizer(max_features=feature)
+    :param documents list of documents
+    :param num_feature amount of features to extract from each class
+    :param export_graph export a wordcloud png
+
+    :return list of word features
+    """
+    spam_corpus = [' '.join(getattr(d, token_parameter)) for d in documents if d.label == 'spam']
+    ham_corpus = [' '.join(getattr(d, token_parameter)) for d in documents if d.label == 'ham']
+
+    t = TfidfVectorizer(max_features=num_feature)
 
     t.fit_transform(spam_corpus)
     spam_features = t.get_feature_names()
