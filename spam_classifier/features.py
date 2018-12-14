@@ -144,7 +144,7 @@ class LambDocument(object):
             total_capital
         ]
 
-        vec += per_len_capital
+        vec += [x[1] for x in per_len_capital]
         vec += self.title_word_freq_select(title_word_select_features)
         vec += self.word_freq_select(word_select_features)
 

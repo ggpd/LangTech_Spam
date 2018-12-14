@@ -126,7 +126,7 @@ def test(test_file, classifier_file, errors_out):
     test_file_names = [x[0] for x in test_csv]
     test_data = [x[2:] for x in test_csv]
 
-    use_ids = classifier.StatelessClassifier()
+    use_ids = classifier.StatelessClassifier(None, None)
 
     final_classifier = joblib.load(filename=classifier_file)
 

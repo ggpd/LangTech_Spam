@@ -45,7 +45,7 @@ class StatelessClassifier:
         if grid_search_params != None:
             classifier = self.grid_search(classifier, grid_search_params, train_folds)
             classifier.fit(self.train_data, self.train_label)
-            cla = classifier.best_estimator
+            cla = classifier.best_estimator_
         else:
             cla = classifier.fit(self.train_data, self.train_label)
 
