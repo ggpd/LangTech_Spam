@@ -1,3 +1,8 @@
+"""
+CLI for the classifier.
+
+"""
+
 import os
 
 import click
@@ -21,8 +26,9 @@ def data(data_dir, output_dir):
 @cli.command()
 @click.argument("training_file", type=click.Path(exists=True, dir_okay=False, file_okay=True))
 @click.argument("classifier_out", type=click.Path(dir_okay=False, file_okay=True))
-def train(training_file, classifier_out):
-    main.train(training_file, classifier_out)
+@click.argument("classifier_type", type=click.Choice(['svc', 'knn', 'nb', 'rf']))
+def train(training_file, classifier_out, classifier_type):
+    main.train(training_file, classifier_out, classifier_type)
 
 
 @cli.command()
@@ -36,11 +42,12 @@ def test(test_file, classifier_file, errors_out):
 @cli.command()
 @click.argument("data_dir", type=click.Path(dir_okay=True, file_okay=False))
 @click.argument("output_dir", type=click.Path(dir_okay=True, file_okay=False))
-def auto(data_dir, output_dir):
+@click.argument("classifier_type", type=click.Choice(['svc', 'knn', 'nb', 'rf']))
+def auto(data_dir, output_dir, classifier_type):
     classifier_out = os.path.join(output_dir, "classifier.pkl")
     errors_out = os.path.join(output_dir, "errors.csv")
     train_out, test_out = main.data(data_dir, output_dir)
-    main.train(train_out, classifier_out)
+    main.train(train_out, classifier_out, classifier_type)
     main.test(test_out, classifier_out, errors_out)
 
 

@@ -1,3 +1,8 @@
+"""
+Graphing functions for evaluation.
+
+"""
+
 import itertools
 from collections import Counter
 
@@ -8,6 +13,16 @@ import nltk.tokenize
 
 # https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', filename='conf_matrix.png', cmap=plt.cm.Reds):
+    """
+    Plot a confusion matrix with matplotlib.
+
+    :cm confusion matrix
+    :classes classes of graph as list
+    :normalize normalize to 0-1 scale
+    :title title of graph
+    :filename filename to save too
+    :cmap color map to use
+    """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -36,6 +51,14 @@ def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix'
     plt.savefig(filename)
 
 def plot_wordcloud(freq, corpus, filename):
+    """
+    Create a wordcloud from the frequently used words.
+
+    :freq list of words to extract
+    :corpus list of all documents
+    :filename name of file to save
+    """
+
     tokens = []
     
     for doc in corpus:
