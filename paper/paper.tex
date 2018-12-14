@@ -8,10 +8,8 @@
 \usepackage{wrapfig}
 \usepackage{subfig}
 \usepackage{hyperref}
-%\usepackage{subcaption}
-
-%\usepackage{biblatex}
 \usepackage[margin=1.0in]{geometry} % don't know what size margins to use
+
 \newenvironment{Figure}
   {\par\medskip\noindent\minipage{\linewidth}}
   {\endminipage\par\medskip}
@@ -37,9 +35,9 @@
         of determining if a message is spam or not spam (ham). These methods
         will be tested on a publicly available corpora and compared to the results
         of other models introduced by other authors. Classifiers will be selected
-        from the variety available through the open-source Python module scikit-learn.
+        from the variety available through the open-source Python module scikit-learn \cite{scikit-learn}.
 
-    \begin{multicols}{2}
+    \begin{multicols*}{2}
         \section{Introduction}
             The classification of spam emails is an important task in today's society,
             as we receive potentially hundreds of them a year which clutter
@@ -63,7 +61,7 @@
 
             \begin{Figure}
                 \centering
-                \includegraphics[width=\linewidth]{figures/process.png}
+                \includegraphics[width=0.5\linewidth]{figures/process.png}
                 \captionof{figure}{Our Machine Learning Process}\label{fig:process}
             \end{Figure}
 
@@ -84,7 +82,7 @@
             of our results to others. 
             
             So we shortlisted a few datasets that fulfilled some of these characteristics, but
-            settled on the SpamAssasin Dataset which fulfilled all of our requirements
+            settled on the SpamAssassin Dataset which fulfilled all of our requirements
             with raw email data that mostly consisted of both business and casual
             conversations\cite{sa_dataset}. It consisted of both easy and hard data, but we stuck with
             just the easy data as many of the hard pieces of data were too difficult
@@ -121,7 +119,7 @@
 
 
             Next we used BeautifulSoup's HTML parser to interpret any HTML data that
-            was in an email. We queried the document structure for the \textit{href}
+            was in an email \cite{beautiful_soup}. We queried the document structure for the \textit{href}
             attribute because it indicates a link. Not only an \textit{a} tag can include
             a link, tags such as an \textit{img} tag can also contain one. Potential attackers
             may also use an \textit{a} tag to make a link look like it is going somewhere else,
@@ -136,14 +134,14 @@
             The tokenization step was done with NLTK's word and sentence tokenizer.
             The sentence tokens were used for some metrics such as average words per
             sentence and could be used in the future for the analysis of sentence
-            structure. The word tokens were stripped of punctuation such as '.',
+            structure \cite{nltk}. The word tokens were stripped of punctuation such as '.',
             '?', '(' and ')', which would litter our unigrams. Next we removed stopwords
             from the provided list of English stopwords in NLTK's corpus. Removing
             these words are necessary as they provide no direct meaning when it comes
             to frequency analysis of the documents and would just provide more noise
             in the classifier. Lastly we
             stemmed the words using NLTK's Porter Stemmer with their extensions to
-            Martin Porter's algorithm. This allowed use to remove suffixes such as '-s',
+            Martin Porter's algorithm \cite{porter1980algorithm}. This allowed use to remove suffixes such as '-s',
             which would group `business' and `businesses' separately.
 
 
@@ -154,13 +152,14 @@
         \section{Feature Extraction}
 
             The next step is to extract the necessary features and then vectorize
-            them for training with our classifier. 
+            them for training with our classifier. We used a combination of features
+            extracted from the structure of the email and text, along with traditional
+            word frequency for important words.
             
             \begin{Figure}
                 \centering
                 \includegraphics[scale=0.5]{figures/extract.png}
-                \captionof{figure}{Extraction Process}
-                \label{fig:extrac}
+                \captionof{figure}{Extraction Process}\label{fig:extrac}
             \end{Figure}
             
             
@@ -174,11 +173,11 @@
             ratio of ham to spam was not 1:1. Characteristic words to spam emails such
             as ``free'' wouldn't show up because they're not prominent in ham emails.
 
-            \begin{minipage}{0.4\columnwidth}
+            \begin{minipage}{0.48\columnwidth}
                 \includegraphics[width=\textwidth]{figures/spam_wc}
                 \captionof{figure}{Spam}\label{fig:spam_wc}
             \end{minipage}
-            \begin{minipage}{0.4\columnwidth}
+            \begin{minipage}{0.48\columnwidth}
                 \includegraphics[width=\textwidth]{figures/ham_wc}
                 \captionof{figure}{Ham}\label{fig:ham_wc}
              \end{minipage}
@@ -191,6 +190,15 @@
              But in general you see words that you would associate with someone trying
              to get you to send them money or buy a product. Words like ``money'',
              ``offer'' and ``order'' are the epitome of this.
+
+             We followed this same process for extracting features for the title, but
+             we kept the features separate as a title's content may have more distinct
+             patterns compared to the body of an email.
+
+             We also added some analysis of sequences of capital letters, as a characteristic
+             of spam emails is all caps sentences to grab the attention of the receiver. We
+             kept track of sequences that range in length from 3 to 10, individually recording
+             the frequency of occurrence.
         
         \section{Classifier Selection}
         
@@ -321,5 +329,5 @@
         \nocite{*}
         \bibliography{paper} 
         \bibliographystyle{alpha}
-    \end{multicols}
+    \end{multicols*}
 \end{document}
