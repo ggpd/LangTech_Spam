@@ -37,7 +37,7 @@
         of other models introduced by other authors. Classifiers will be selected
         from the variety available through the open-source Python module scikit-learn \cite{scikit-learn}.
 
-    \begin{multicols*}{2}
+    \begin{multicols}{2}
         \section{Introduction}
             The classification of spam emails is an important task in today's society,
             as we receive potentially hundreds of them a year which clutter
@@ -158,10 +158,9 @@
             
             \begin{Figure}
                 \centering
-                \includegraphics[scale=0.5]{figures/extract.png}
+                \includegraphics[width=\linewidth]{figures/extract.png}
                 \captionof{figure}{Extraction Process}\label{fig:extrac}
             \end{Figure}
-            
             
             The first step of extraction was
             to find words that meant the most to the corpus which we defined as
@@ -171,9 +170,8 @@
             to the corpus. Next we split the documents into spam and ham before analysis.
             This was done because this algorithm is still based on frequency and the
             ratio of ham to spam was not 1:1. Characteristic words to spam emails such
-            as ``free'' wouldn't show up because they're not prominent in ham emails.
-
-            \begin{minipage}{0.48\columnwidth}
+            as ``free'' wouldn't show up because they're not prominent in ham emails.\\\\
+            \noindent\begin{minipage}{0.48\columnwidth}
                 \includegraphics[width=\textwidth]{figures/spam_wc}
                 \captionof{figure}{Spam}\label{fig:spam_wc}
             \end{minipage}
@@ -241,11 +239,20 @@
             We also examined the effect of tuning the number of feature words chosen by the TF-IDF 
             extractor. The number of feature words chosen for initial analysis was 50, but subsequent 
             tests ranged from 50 to 1050 in steps of 200.
-        \section{Results}
+
+            \section{Results}
             Classifiers were evaluated on precision and recall on the spam class. Overall, precision is
             weighted more heavily than recall in the evaluation because it would likely be more disruptive 
             to classify a ham email as spam than to let in an occasional spam message. Subsequently, the 
             classifiers were also subjected to various feature word counts to observe the effect.
+    \end{multicols}
+        \begin{Figure}
+            \centering
+            \includegraphics[width=\linewidth]{figures/precision_recall.png}
+            \captionof{figure}{Precison and Recall Comparison}
+            \label{fig:precision_recall}
+        \end{Figure}
+    \begin{multicols}{2}
             \subsection{General Precision and Recall}
                 Overall, the classifiers performed well with just features extracted from the email body.
                 Precision and recall comparison can be found in \autoref{fig:precision_recall} with direct 
@@ -266,14 +273,7 @@
                     \captionof{table}{Precison and Recall}
                     \label{tab:precision_recall}
                 \end{Figure}
-
-                \begin{Figure}
-                    \centering
-                    \includegraphics[width=\linewidth]{figures/precision_recall.png}
-                    \captionof{figure}{Precison and Recall Comparison}
-                    \label{fig:precision_recall}
-                \end{Figure}
-
+                
                 While all classifiers had a precision greater than 80\%, the recall clearly divides the 
                 classifiers into two groups. Those with over 80\% recall were Random Forest and Naive Bayes, 
                 while the KNN and SVM both had a recall lower than 50\%. 
@@ -289,27 +289,27 @@
                 content for text analysis, our implementation misses important information in subject lines or 
                 email addresses.
 
+    \end{multicols}
+        \begin{Figure}
+            \centering
+            \includegraphics[width=\linewidth]{figures/recall_wv_effect.png}
+            \captionof{figure}{Effect of the number of feature words on classifier recall}
+            \label{fig:recall_word_effect}
+        \end{Figure}
 
+        \begin{Figure}
+            \centering
+            \includegraphics[width=\linewidth]{figures/precision_wv_effect.png}
+            \captionof{figure}{Effect of the number of feature words on classifier precision}
+            \label{fig:precision_word_effect}
+        \end{Figure}
+    \begin{multicols}{2}
             \subsection{Effect of Number of Feature Words} 
                 When increasing the number of feature words, precision increased dramatically for some classifiers. 
                 Specifically, Naive Bayes and the SVM gained a precision increase of 10\% and 8\% respectively (See \autoref{fig:precision_word_effect}).
                 However, the number of feature words did not seem to effect recall as much as precision (See \autoref{fig:recall_word_effect}).
                 Only one classifier gained over 3\% precision from 50 feature words. Naive Bayes gained 10\% recall when increasing 
                 the number of feature words from 50 to 250. This gain dropped off as the number of feature words increased.
-
-                \begin{Figure}
-                    \centering
-                    \includegraphics[width=\linewidth]{figures/recall_wv_effect.png}
-                    \captionof{figure}{Effect of the number of feature words on classifier recall}
-                    \label{fig:recall_word_effect}
-                \end{Figure}
-                
-                \begin{Figure}
-                    \centering
-                    \includegraphics[width=\linewidth]{figures/precision_wv_effect.png}
-                    \captionof{figure}{Effect of the number of feature words on classifier precision}
-                    \label{fig:precision_word_effect}
-                \end{Figure}
 
                 Interestingly, Naive Bayes dropped in precision by over 2\% 
                 for 250 and 450 feature words before having the largest gain of any classifier. 
@@ -329,5 +329,5 @@
         \nocite{*}
         \bibliography{paper} 
         \bibliographystyle{alpha}
-    \end{multicols*}
+    \end{multicols}
 \end{document}
